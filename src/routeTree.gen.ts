@@ -9,8 +9,50 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignalsRouteImport } from './routes/signals'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PredictionsRouteImport } from './routes/predictions'
+import { Route as PatternsRouteImport } from './routes/patterns'
+import { Route as MarketsRouteImport } from './routes/markets'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as DigitsRouteImport } from './routes/digits'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SignalsRoute = SignalsRouteImport.update({
+  id: '/signals',
+  path: '/signals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictionsRoute = PredictionsRouteImport.update({
+  id: '/predictions',
+  path: '/predictions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatternsRoute = PatternsRouteImport.update({
+  id: '/patterns',
+  path: '/patterns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketsRoute = MarketsRouteImport.update({
+  id: '/markets',
+  path: '/markets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DigitsRoute = DigitsRouteImport.update({
+  id: '/digits',
+  path: '/digits',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +61,130 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/digits': typeof DigitsRoute
+  '/history': typeof HistoryRoute
+  '/markets': typeof MarketsRoute
+  '/patterns': typeof PatternsRoute
+  '/predictions': typeof PredictionsRoute
+  '/settings': typeof SettingsRoute
+  '/signals': typeof SignalsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/digits': typeof DigitsRoute
+  '/history': typeof HistoryRoute
+  '/markets': typeof MarketsRoute
+  '/patterns': typeof PatternsRoute
+  '/predictions': typeof PredictionsRoute
+  '/settings': typeof SettingsRoute
+  '/signals': typeof SignalsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/digits': typeof DigitsRoute
+  '/history': typeof HistoryRoute
+  '/markets': typeof MarketsRoute
+  '/patterns': typeof PatternsRoute
+  '/predictions': typeof PredictionsRoute
+  '/settings': typeof SettingsRoute
+  '/signals': typeof SignalsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/digits'
+    | '/history'
+    | '/markets'
+    | '/patterns'
+    | '/predictions'
+    | '/settings'
+    | '/signals'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/digits'
+    | '/history'
+    | '/markets'
+    | '/patterns'
+    | '/predictions'
+    | '/settings'
+    | '/signals'
+  id:
+    | '__root__'
+    | '/'
+    | '/digits'
+    | '/history'
+    | '/markets'
+    | '/patterns'
+    | '/predictions'
+    | '/settings'
+    | '/signals'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DigitsRoute: typeof DigitsRoute
+  HistoryRoute: typeof HistoryRoute
+  MarketsRoute: typeof MarketsRoute
+  PatternsRoute: typeof PatternsRoute
+  PredictionsRoute: typeof PredictionsRoute
+  SettingsRoute: typeof SettingsRoute
+  SignalsRoute: typeof SignalsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signals': {
+      id: '/signals'
+      path: '/signals'
+      fullPath: '/signals'
+      preLoaderRoute: typeof SignalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predictions': {
+      id: '/predictions'
+      path: '/predictions'
+      fullPath: '/predictions'
+      preLoaderRoute: typeof PredictionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patterns': {
+      id: '/patterns'
+      path: '/patterns'
+      fullPath: '/patterns'
+      preLoaderRoute: typeof PatternsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/markets': {
+      id: '/markets'
+      path: '/markets'
+      fullPath: '/markets'
+      preLoaderRoute: typeof MarketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/digits': {
+      id: '/digits'
+      path: '/digits'
+      fullPath: '/digits'
+      preLoaderRoute: typeof DigitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +197,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DigitsRoute: DigitsRoute,
+  HistoryRoute: HistoryRoute,
+  MarketsRoute: MarketsRoute,
+  PatternsRoute: PatternsRoute,
+  PredictionsRoute: PredictionsRoute,
+  SettingsRoute: SettingsRoute,
+  SignalsRoute: SignalsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
