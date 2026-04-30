@@ -139,6 +139,124 @@ function DigitsPage() {
           </div>
         </Card>
 
+        {/* ===== Prediction Panel ===== */}
+        <Card className="p-5 bg-card border-border shadow-card">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <h3 className="font-semibold text-sm">AI Prediction Engine</h3>
+              <Badge variant="outline" className="font-mono text-[10px] border-primary/30 text-primary">{symbol}</Badge>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <Target className="h-3.5 w-3.5 text-bull" />
+              <span className="text-muted-foreground">Best signal:</span>
+              <span className="font-mono font-bold text-bull">{bestOverall.type} → {bestOverall.label}</span>
+              <Badge className="bg-bull/15 text-bull border border-bull/30 font-mono text-[10px]">{bestOverall.prob.toFixed(1)}%</Badge>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Over / Under */}
+            <div className="rounded-lg border border-border bg-surface/40 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase tracking-wider font-mono text-muted-foreground">Over / Under</span>
+                <ArrowUpRight className="h-3.5 w-3.5 text-bull" />
+              </div>
+              <div className="space-y-1">
+                {overOptions.map((o) => {
+                  const isBest = o.barrier === bestOver.barrier;
+                  return (
+                    <div key={`over-${o.barrier}`} className={`flex items-center justify-between rounded px-2 py-1 ${isBest ? "bg-bull/15 border border-bull/30" : ""}`}>
+                      <span className="font-mono text-xs">Over {o.barrier}</span>
+                      <span className={`font-mono text-xs tabular ${isBest ? "text-bull font-bold" : "text-muted-foreground"}`}>{o.prob.toFixed(1)}%</span>
+                    </div>
+                  );
+                })}
+                {underOptions.map((o) => {
+                  const isBest = o.barrier === bestUnder.barrier;
+                  return (
+                    <div key={`under-${o.barrier}`} className={`flex items-center justify-between rounded px-2 py-1 ${isBest ? "bg-bear/15 border border-bear/30" : ""}`}>
+                      <span className="font-mono text-xs">Under {o.barrier}</span>
+                      <span className={`font-mono text-xs tabular ${isBest ? "text-bear font-bold" : "text-muted-foreground"}`}>{o.prob.toFixed(1)}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Differs / Matches */}
+            <div className="rounded-lg border border-border bg-surface/40 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase tracking-wider font-mono text-muted-foreground">Differs / Matches</span>
+                <Target className="h-3.5 w-3.5 text-primary" />
+              </div>
+              <div className="rounded-md bg-bull/10 border border-bull/30 p-2">
+                <div className="text-[10px] text-muted-foreground">Best Differs</div>
+                <div className="flex items-center justify-between mt-0.5">
+                  <span className="font-mono font-bold text-bull text-base">Differs {differsPick.digit}</span>
+                  <span className="font-mono text-xs text-bull">{differProb.toFixed(1)}%</span>
+                </div>
+              </div>
+              <div className="rounded-md bg-warning/10 border border-warning/30 p-2">
+                <div className="text-[10px] text-muted-foreground">Best Matches</div>
+                <div className="flex items-center justify-between mt-0.5">
+                  <span className="font-mono font-bold text-warning text-base">Matches {matchesPick.digit}</span>
+                  <span className="font-mono text-xs text-warning">{matchesPick.percent.toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Even / Odd */}
+            <div className="rounded-lg border border-border bg-surface/40 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase tracking-wider font-mono text-muted-foreground">Even / Odd</span>
+                <Sparkles className="h-3.5 w-3.5 text-info" />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className={`rounded-md p-2 text-center ${evenProb >= oddProb ? "bg-bull/15 border border-bull/30" : "bg-surface border border-border"}`}>
+                  <div className="text-[10px] text-muted-foreground">Even</div>
+                  <div className={`font-mono font-bold ${evenProb >= oddProb ? "text-bull" : ""}`}>{evenProb.toFixed(1)}%</div>
+                </div>
+                <div className={`rounded-md p-2 text-center ${oddProb > evenProb ? "bg-bull/15 border border-bull/30" : "bg-surface border border-border"}`}>
+                  <div className="text-[10px] text-muted-foreground">Odd</div>
+                  <div className={`font-mono font-bold ${oddProb > evenProb ? "text-bull" : ""}`}>{oddProb.toFixed(1)}%</div>
+                </div>
+              </div>
+              <div className="text-[10px] text-muted-foreground text-center pt-1">
+                Recommend: <span className="font-mono font-bold text-foreground">{evenProb >= oddProb ? "Even" : "Odd"}</span>
+              </div>
+            </div>
+
+            {/* Rise / Fall */}
+            <div className="rounded-lg border border-border bg-surface/40 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase tracking-wider font-mono text-muted-foreground">Rise / Fall</span>
+                {riseProb >= fallProb ? <ArrowUpRight className="h-3.5 w-3.5 text-bull" /> : <ArrowDownRight className="h-3.5 w-3.5 text-bear" />}
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className={`rounded-md p-2 text-center ${riseProb >= fallProb ? "bg-bull/15 border border-bull/30" : "bg-surface border border-border"}`}>
+                  <div className="text-[10px] text-muted-foreground">Rise</div>
+                  <div className={`font-mono font-bold ${riseProb >= fallProb ? "text-bull" : ""}`}>{riseProb.toFixed(1)}%</div>
+                </div>
+                <div className={`rounded-md p-2 text-center ${fallProb > riseProb ? "bg-bear/15 border border-bear/30" : "bg-surface border border-border"}`}>
+                  <div className="text-[10px] text-muted-foreground">Fall</div>
+                  <div className={`font-mono font-bold ${fallProb > riseProb ? "text-bear" : ""}`}>{fallProb.toFixed(1)}%</div>
+                </div>
+              </div>
+              <div className="text-[10px] text-muted-foreground text-center pt-1">
+                Momentum: <span className="font-mono font-bold text-foreground">{riseProb >= fallProb ? "Bullish" : "Bearish"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-md border border-warning/20 bg-warning/5 p-2.5 flex items-start gap-2">
+            <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Probabilities are derived from the last 1,000 ticks. Past performance does not guarantee future results — use predictions as one input among many.
+            </p>
+          </div>
+        </Card>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Probability heatmap (bar) */}
           <Card className="lg:col-span-2 p-4 bg-card border-border shadow-card">
