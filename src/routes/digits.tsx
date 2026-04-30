@@ -3,20 +3,24 @@ import { AppHeader } from "@/components/AppHeader";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { generateDigitFrequency, generateDigitStream } from "@/lib/mock-data";
-import { Flame, Snowflake, AlertCircle } from "lucide-react";
+import { Flame, Snowflake, AlertCircle, Target, Sparkles, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { useState, useMemo } from "react";
 
 export const Route = createFileRoute("/digits")({
   head: () => ({
     meta: [
       { title: "Digits Analysis — Quantix" },
-      { name: "description", content: "Last digit frequency, hot/cold digits, streak detection and probability heatmap for Deriv digit trading." },
+      { name: "description", content: "Last digit frequency, hot/cold digits, streak detection, predictions for Over/Under, Differs/Matches, Rise/Fall, Even/Odd on Deriv volatility indices." },
     ],
   }),
   component: DigitsPage,
 });
 
-const SYMBOLS = ["R_10", "R_25", "R_50", "R_75", "R_100"];
+const SYMBOLS = [
+  "R_10", "R_25", "R_50", "R_75", "R_100",
+  "1HZ10V", "1HZ25V", "1HZ50V", "1HZ75V", "1HZ100V",
+  "1HZ150V", "1HZ200V", "1HZ250V", "1HZ300V",
+];
 
 function DigitsPage() {
   const [symbol, setSymbol] = useState("R_100");
