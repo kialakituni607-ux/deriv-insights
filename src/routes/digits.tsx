@@ -43,6 +43,51 @@ function DigitsPage() {
     i = j;
   }
 
+  // ===== Predictions =====
+  // Over N: probability digit > N (digits 0-9). Best contract = max prob across barriers 0..8
+  // Under N: probability digit < N. Best contract = max across barriers 1..9
+  const totalCount = freq.reduce((a, f) => a + f.count, 0) || 1;
+  const pct = (n: number) => (n / totalCount) * 100;
+
+  const overOptions = [1, 2, 3, 4].map((b) => ({
+    barrier: b,
+    prob: pct(freq.filter((f) => f.digit > b).reduce((a, f) => a + f.count, 0)),
+  }));
+  const underOptions = [6, 7, 8].map((b) => ({
+    barrier: b,
+    prob: pct(freq.filter((f) => f.digit < b).reduce((a, f) => a + f.count, 0)),
+  }));
+  const bestOver = overOptions.reduce((a, b) => (b.prob > a.prob ? b : a));
+  const bestUnder = underOptions.reduce((a, b) => (b.prob > a.prob ? b : a));
+
+  // Matches/Differs: pick the most/least frequent digit
+  const sortedFreq = [...freq].sort((a, b) => b.count - a.count);
+  const matchesPick = sortedFreq[0]; // highest prob digit to "Match"
+  const differsPick = sortedFreq[sortedFreq.length - 1]; // best digit to "Differ" (lowest prob ⇒ high differ chance)
+  const differProb = 100 - differsPick.percent;
+
+  // Even / Odd
+  const evenProb = pct(freq.filter((f) => f.digit % 2 === 0).reduce((a, f) => a + f.count, 0));
+  const oddProb = 100 - evenProb;
+
+  // Rise / Fall — derived from last 20 ticks momentum
+  const recent = stream.slice(-20);
+  let rises = 0;
+  for (let k = 1; k < recent.length; k++) if (recent[k] > recent[k - 1]) rises++;
+  const riseProb = (rises / (recent.length - 1)) * 100;
+  const fallProb = 100 - riseProb;
+
+  // Best overall recommendation
+  const allPredictions = [
+    { type: "Over", label: `Over ${bestOver.barrier}`, prob: bestOver.prob, dir: "up" as const },
+    { type: "Under", label: `Under ${bestUnder.barrier}`, prob: bestUnder.prob, dir: "down" as const },
+    { type: "Differs", label: `Differs ${differsPick.digit}`, prob: differProb, dir: "up" as const },
+    { type: "Matches", label: `Matches ${matchesPick.digit}`, prob: matchesPick.percent, dir: "up" as const },
+    { type: "Even/Odd", label: evenProb >= oddProb ? "Even" : "Odd", prob: Math.max(evenProb, oddProb), dir: "up" as const },
+    { type: "Rise/Fall", label: riseProb >= fallProb ? "Rise" : "Fall", prob: Math.max(riseProb, fallProb), dir: riseProb >= fallProb ? "up" as const : "down" as const },
+  ];
+  const bestOverall = allPredictions.reduce((a, b) => (b.prob > a.prob ? b : a));
+
   return (
     <>
       <AppHeader title="Digits Analysis" subtitle="Last-digit frequency, hot/cold zones, streaks" />
