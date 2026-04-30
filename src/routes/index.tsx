@@ -5,7 +5,7 @@ import { MiniSparkline } from "@/components/MiniSparkline";
 import { MARKETS, INDICATORS, SIGNALS, PERFORMANCE } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowDownRight, ArrowUpRight, Brain, Sparkles, TrendingUp, AlertTriangle, Target } from "lucide-react";
+import { ArrowUpRight, Brain, Sparkles, TrendingUp, AlertTriangle, Target } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
 
 export const Route = createFileRoute("/")({
