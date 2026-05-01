@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, LineChart, Radio, Brain, Hash, History, Settings, ScanSearch } from "lucide-react";
+import { LayoutDashboard, LineChart, Radio, Brain, Hash, History, Settings, ScanSearch, Target } from "lucide-react";
 import logo from "@/assets/logo.png";
 import {
   Sidebar,
@@ -22,6 +22,7 @@ const mainItems = [
   { title: "Predictions", url: "/predictions", icon: Brain },
   { title: "Digits", url: "/digits", icon: Hash },
   { title: "Patterns", url: "/patterns", icon: ScanSearch },
+  { title: "Strategies", url: "/strategies", icon: Target },
 ];
 
 const secondaryItems = [

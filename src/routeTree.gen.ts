@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StrategiesRouteImport } from './routes/strategies'
 import { Route as SignalsRouteImport } from './routes/signals'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PredictionsRouteImport } from './routes/predictions'
@@ -18,6 +19,11 @@ import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DigitsRouteImport } from './routes/digits'
 import { Route as IndexRouteImport } from './routes/index'
 
+const StrategiesRoute = StrategiesRouteImport.update({
+  id: '/strategies',
+  path: '/strategies',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignalsRoute = SignalsRouteImport.update({
   id: '/signals',
   path: '/signals',
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/predictions': typeof PredictionsRoute
   '/settings': typeof SettingsRoute
   '/signals': typeof SignalsRoute
+  '/strategies': typeof StrategiesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/predictions': typeof PredictionsRoute
   '/settings': typeof SettingsRoute
   '/signals': typeof SignalsRoute
+  '/strategies': typeof StrategiesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/predictions': typeof PredictionsRoute
   '/settings': typeof SettingsRoute
   '/signals': typeof SignalsRoute
+  '/strategies': typeof StrategiesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/predictions'
     | '/settings'
     | '/signals'
+    | '/strategies'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/predictions'
     | '/settings'
     | '/signals'
+    | '/strategies'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/predictions'
     | '/settings'
     | '/signals'
+    | '/strategies'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,10 +144,18 @@ export interface RootRouteChildren {
   PredictionsRoute: typeof PredictionsRoute
   SettingsRoute: typeof SettingsRoute
   SignalsRoute: typeof SignalsRoute
+  StrategiesRoute: typeof StrategiesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/strategies': {
+      id: '/strategies'
+      path: '/strategies'
+      fullPath: '/strategies'
+      preLoaderRoute: typeof StrategiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signals': {
       id: '/signals'
       path: '/signals'
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   PredictionsRoute: PredictionsRoute,
   SettingsRoute: SettingsRoute,
   SignalsRoute: SignalsRoute,
+  StrategiesRoute: StrategiesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
