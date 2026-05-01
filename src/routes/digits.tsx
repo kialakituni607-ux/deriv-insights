@@ -53,7 +53,7 @@ function DigitsPage() {
     barrier: b,
     prob: pct(freq.filter((f) => f.digit > b).reduce((a, f) => a + f.count, 0)),
   }));
-  const underOptions = [6, 7, 8].map((b) => ({
+  const underOptions = [8, 7, 6].map((b) => ({
     barrier: b,
     prob: pct(freq.filter((f) => f.digit < b).reduce((a, f) => a + f.count, 0)),
   }));
