@@ -28,6 +28,19 @@ function DigitsPage() {
   const freq = useMemo(() => generateDigitFrequency(seed), [seed]);
   const stream = useMemo(() => generateDigitStream(40, seed + 3), [seed]);
 
+  // Moving cursor — faster on 1HZ (1s/digit), slower on R_ (2s/digit)
+  const tickMs = symbol.startsWith("1HZ") ? 1000 : 2000;
+  const [cursorDigit, setCursorDigit] = useState<number>(stream[stream.length - 1] ?? 0);
+  useEffect(() => {
+    setCursorDigit(stream[stream.length - 1] ?? 0);
+    let i = 0;
+    const id = setInterval(() => {
+      i = (i + 1) % stream.length;
+      setCursorDigit(stream[i]);
+    }, tickMs);
+    return () => clearInterval(id);
+  }, [symbol, tickMs, stream]);
+
   const max = Math.max(...freq.map((f) => f.count));
   const min = Math.min(...freq.map((f) => f.count));
   const hot = freq.filter((f) => f.count === max).map((f) => f.digit);
