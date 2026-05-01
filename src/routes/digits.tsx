@@ -131,11 +131,11 @@ function DigitsPage() {
               <span className="flex items-center gap-1.5"><span className="h-0.5 w-3 bg-primary" /> Current</span>
             </div>
           </div>
-          <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-3">
-            {freq.map((f) => {
+          <div className="grid grid-cols-5 sm:grid-cols-10 gap-4 sm:gap-5 justify-items-center">
+            {[...freq].sort((a, b) => a.digit - b.digit).map((f) => {
               const isHot = hot.includes(f.digit);
               const isCold = cold.includes(f.digit);
-              const isCurrent = stream[stream.length - 1] === f.digit;
+              const isCurrent = cursorDigit === f.digit;
               const ratio = (f.count - min) / (max - min || 1); // 0..1
               const arcColor = isHot ? "var(--bull)" : isCold ? "var(--bear)" : "var(--muted-foreground)";
               const arcOpacity = isHot || isCold ? 1 : 0.3;
