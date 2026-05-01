@@ -28,9 +28,9 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Quantix — Trading Analysis Platform" },
-      { name: "description", content: "Professional multi-market trading analysis platform with real-time signals, predictions, and Deriv digit analytics." },
-      { property: "og:title", content: "Quantix — Trading Analysis Platform" },
+      { title: "ANTIPOVERTY AI — Analysis Tool" },
+      { name: "description", content: "ANTIPOVERTY AI Analysis Tool: multi-market trading analysis with real-time signals, predictions, and Deriv digit analytics." },
+      { property: "og:title", content: "ANTIPOVERTY AI — Analysis Tool" },
       { property: "og:description", content: "Real-time signals, predictions, and Deriv digit analytics." },
       { property: "og:type", content: "website" },
     ],

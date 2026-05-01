@@ -26,8 +26,8 @@ export function AppHeader({ title, subtitle }: AppHeaderProps) {
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <Bell className="h-4 w-4" />
         </Button>
-        <div className="h-8 w-8 rounded-full gradient-primary grid place-items-center text-[11px] font-bold text-primary-foreground">
-          QX
+        <div className="h-8 w-8 rounded-full gradient-primary grid place-items-center text-[10px] font-bold text-primary-foreground">
+          AP
         </div>
       </div>
     </header>
