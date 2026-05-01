@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { generateDigitFrequency, generateDigitStream } from "@/lib/mock-data";
 import { Flame, Snowflake, AlertCircle, Target, Sparkles, ArrowUpRight, ArrowDownRight } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 export const Route = createFileRoute("/digits")({
   head: () => ({
@@ -27,6 +27,19 @@ function DigitsPage() {
   const seed = symbol.charCodeAt(symbol.length - 1);
   const freq = useMemo(() => generateDigitFrequency(seed), [seed]);
   const stream = useMemo(() => generateDigitStream(40, seed + 3), [seed]);
+
+  // Moving cursor — faster on 1HZ (1s/digit), slower on R_ (2s/digit)
+  const tickMs = symbol.startsWith("1HZ") ? 1000 : 2000;
+  const [cursorDigit, setCursorDigit] = useState<number>(stream[stream.length - 1] ?? 0);
+  useEffect(() => {
+    setCursorDigit(stream[stream.length - 1] ?? 0);
+    let i = 0;
+    const id = setInterval(() => {
+      i = (i + 1) % stream.length;
+      setCursorDigit(stream[i]);
+    }, tickMs);
+    return () => clearInterval(id);
+  }, [symbol, tickMs, stream]);
 
   const max = Math.max(...freq.map((f) => f.count));
   const min = Math.min(...freq.map((f) => f.count));
@@ -118,11 +131,11 @@ function DigitsPage() {
               <span className="flex items-center gap-1.5"><span className="h-0.5 w-3 bg-primary" /> Current</span>
             </div>
           </div>
-          <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-3">
-            {freq.map((f) => {
+          <div className="grid grid-cols-5 sm:grid-cols-10 gap-4 sm:gap-5 justify-items-center">
+            {[...freq].sort((a, b) => a.digit - b.digit).map((f) => {
               const isHot = hot.includes(f.digit);
               const isCold = cold.includes(f.digit);
-              const isCurrent = stream[stream.length - 1] === f.digit;
+              const isCurrent = cursorDigit === f.digit;
               const ratio = (f.count - min) / (max - min || 1); // 0..1
               const arcColor = isHot ? "var(--bull)" : isCold ? "var(--bear)" : "var(--muted-foreground)";
               const arcOpacity = isHot || isCold ? 1 : 0.3;
@@ -132,16 +145,18 @@ function DigitsPage() {
               return (
                 <div key={f.digit} className="flex flex-col items-center">
                   <div className="relative h-16 w-16 grid place-items-center">
-                    <div className={`h-12 w-12 rounded-full grid place-items-center font-mono font-bold text-lg border-2 transition-colors ${
+                    <div className={`h-12 w-12 rounded-full grid place-items-center font-mono font-bold text-lg border-2 transition-all ${
+                      isCurrent ? "ring-2 ring-primary ring-offset-2 ring-offset-card shadow-glow" : ""
+                    } ${
                       isHot ? "bg-bull/10 border-bull text-bull" :
                       isCold ? "bg-bear/10 border-bear text-bear" :
                       "bg-surface border-border text-foreground"
                     }`}>
                       {f.digit}
                     </div>
-                    {/* Current-tick cursor (small triangle on top) */}
+                    {/* Current-tick cursor (blue triangle on top) */}
                     {isCurrent && (
-                      <div className="absolute -top-1 left-1/2 -translate-x-1/2 h-0 w-0 border-l-[5px] border-r-[5px] border-t-[6px] border-l-transparent border-r-transparent border-t-primary" />
+                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 h-0 w-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-primary drop-shadow-[0_0_4px_var(--primary)]" />
                     )}
                     {/* Half-circle arc beneath */}
                     <svg className="absolute -bottom-1 left-0 right-0 mx-auto" width="64" height="16" viewBox="0 0 64 16">
