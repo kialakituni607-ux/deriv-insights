@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { generateDigitFrequency, generateDigitStream } from "@/lib/mock-data";
 import { Flame, Snowflake, AlertCircle, Target, Sparkles, ArrowUpRight, ArrowDownRight } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 export const Route = createFileRoute("/digits")({
   head: () => ({
