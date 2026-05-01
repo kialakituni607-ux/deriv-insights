@@ -53,7 +53,7 @@ function DigitsPage() {
     barrier: b,
     prob: pct(freq.filter((f) => f.digit > b).reduce((a, f) => a + f.count, 0)),
   }));
-  const underOptions = [6, 7, 8].map((b) => ({
+  const underOptions = [8, 7, 6].map((b) => ({
     barrier: b,
     prob: pct(freq.filter((f) => f.digit < b).reduce((a, f) => a + f.count, 0)),
   }));
@@ -108,31 +108,56 @@ function DigitsPage() {
           </Badge>
         </div>
 
-        {/* Digit circles */}
+        {/* Digit circles — Deriv-style */}
         <Card className="p-5 bg-card border-border shadow-card">
-          <h3 className="font-semibold text-sm mb-4">Digit Distribution</h3>
-          <div className="grid grid-cols-5 sm:grid-cols-10 gap-3 sm:gap-4">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <h3 className="font-semibold text-sm">Last Digit Distribution</h3>
+            <div className="flex items-center gap-3 text-[10px] font-mono text-muted-foreground">
+              <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-bull" /> Highest</span>
+              <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-bear" /> Lowest</span>
+              <span className="flex items-center gap-1.5"><span className="h-0.5 w-3 bg-primary" /> Current</span>
+            </div>
+          </div>
+          <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-3">
             {freq.map((f) => {
               const isHot = hot.includes(f.digit);
               const isCold = cold.includes(f.digit);
-              const intensity = (f.count - min) / (max - min || 1); // 0..1
-              const size = 56 + intensity * 24;
+              const isCurrent = stream[stream.length - 1] === f.digit;
+              const ratio = (f.count - min) / (max - min || 1); // 0..1
+              const arcColor = isHot ? "var(--bull)" : isCold ? "var(--bear)" : "var(--muted-foreground)";
+              const arcOpacity = isHot || isCold ? 1 : 0.3;
+              // Half-circle arc geometry
+              const circ = Math.PI * 26;
+              const dash = circ * (0.25 + ratio * 0.75);
               return (
                 <div key={f.digit} className="flex flex-col items-center">
-                  <div
-                    className={`relative rounded-full grid place-items-center font-mono font-bold transition-all ${
-                      isHot ? "bg-bear/20 border-2 border-bear text-bear shadow-[0_0_24px_-4px_var(--bear)]" :
-                      isCold ? "bg-info/15 border-2 border-info text-info" :
-                      "bg-surface border border-border"
-                    }`}
-                    style={{ width: size, height: size, fontSize: 18 + intensity * 6 }}
-                  >
-                    {f.digit}
-                    {isHot && <Flame className="absolute -top-1 -right-1 h-3.5 w-3.5 text-bear" fill="currentColor" />}
-                    {isCold && <Snowflake className="absolute -top-1 -right-1 h-3.5 w-3.5 text-info" />}
+                  <div className="relative h-16 w-16 grid place-items-center">
+                    <div className={`h-12 w-12 rounded-full grid place-items-center font-mono font-bold text-lg border-2 transition-colors ${
+                      isHot ? "bg-bull/10 border-bull text-bull" :
+                      isCold ? "bg-bear/10 border-bear text-bear" :
+                      "bg-surface border-border text-foreground"
+                    }`}>
+                      {f.digit}
+                    </div>
+                    {/* Current-tick cursor (small triangle on top) */}
+                    {isCurrent && (
+                      <div className="absolute -top-1 left-1/2 -translate-x-1/2 h-0 w-0 border-l-[5px] border-r-[5px] border-t-[6px] border-l-transparent border-r-transparent border-t-primary" />
+                    )}
+                    {/* Half-circle arc beneath */}
+                    <svg className="absolute -bottom-1 left-0 right-0 mx-auto" width="64" height="16" viewBox="0 0 64 16">
+                      <path d="M 6 14 A 26 26 0 0 1 58 14" fill="none" stroke="var(--border)" strokeWidth="3" strokeLinecap="round" />
+                      <path
+                        d="M 6 14 A 26 26 0 0 1 58 14"
+                        fill="none"
+                        stroke={arcColor}
+                        strokeOpacity={arcOpacity}
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeDasharray={`${dash} ${circ}`}
+                      />
+                    </svg>
                   </div>
-                  <div className="mt-2 font-mono text-[11px] tabular">{f.percent.toFixed(1)}%</div>
-                  <div className="font-mono text-[10px] text-muted-foreground">{f.count}</div>
+                  <div className="mt-1.5 font-mono text-[11px] tabular font-semibold">{f.percent.toFixed(1)}%</div>
                 </div>
               );
             })}
